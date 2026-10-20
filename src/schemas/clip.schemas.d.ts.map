@@ -1,0 +1,1 @@
+{"version":3,"file":"clip.schemas.d.ts","sourceRoot":"","sources":["clip.schemas.ts"],"names":[],"mappings":"AAAA,OAAO,EAAC,CAAC,EAAC,MAAM,KAAK,CAAC;AAEtB,eAAO,MAAM,cAAc;;;iBAKzB,CAAC;AAEH,MAAM,MAAM,aAAa,GAAG,CAAC,CAAC,KAAK,CAAC,OAAO,cAAc,CAAC,CAAC;AAY3D,eAAO,MAAM,kBAAkB;;;iBAK7B,CAAC;AAEH,MAAM,MAAM,iBAAiB,GAAG,CAAC,CAAC,KAAK,CAAC,OAAO,kBAAkB,CAAC,CAAC"}
