@@ -10,6 +10,7 @@ import {
 } from "../services/video.service.js";
 
 import { uploadVideoToYouTube } from "../services/youtube-upload.service.js";
+import { updateJobStatus } from "../services/job.service.js";
 
 interface GeneratedClip {
   part: number;
@@ -98,6 +99,7 @@ export async function processVideoController(
     });
     return;
   }
+  const jobId = randomUUID();
 
   try {
     // Get the actual video duration using FFprobe
@@ -110,7 +112,7 @@ export async function processVideoController(
     });
 
     const generatedClips: GeneratedClip[] = [];
-    const jobId = randomUUID();
+    
 
     console.log("Job ID:", jobId);
 
@@ -173,6 +175,12 @@ export async function processVideoController(
     });
   } catch (error) {
     console.error("Video processing or upload error:", error);
+
+   try {
+     await updateJobStatus(jobId, "failed")
+   } catch (error) {
+     console.error("Job status update failed")
+   }
 
     res.status(500).json({
       success: false,

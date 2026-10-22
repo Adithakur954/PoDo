@@ -1,4 +1,3 @@
-
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -21,7 +20,7 @@ interface JobStore {
 
 export async function updateJobStatus(
   jobId: string,
-  status: string
+  status: string,
 ): Promise<void> {
   await mkdir(path.dirname(jobFilePath), { recursive: true });
 
@@ -32,7 +31,7 @@ export async function updateJobStatus(
     jobStore = JSON.parse(fileContent) as JobStore;
   } catch (error) {
     if (
-      error instanceof Error &&  // instanceof  is used to check if the error is an instance of the Error class, which is a built-in JavaScript class for handling errors.
+      error instanceof Error && // instanceof  is used to check if the error is an instance of the Error class, which is a built-in JavaScript class for handling errors.
       "code" in error &&
       error.code === "ENOENT"
     ) {
@@ -50,34 +49,26 @@ export async function updateJobStatus(
 
   job.status = status;
 
-  await writeFile(
-    jobFilePath,
-    JSON.stringify(jobStore, null, 2),
-    "utf8"
-  );
+  await writeFile(jobFilePath, JSON.stringify(jobStore, null, 2), "utf8");
 }
 
-export async function createJob(
-  job:Job,
-):Promise<void>{
 
-    await mkdir(path.dirname(jobFilePath), { recursive: true });
-     let jobStore: JobStore;
-    
-    try {
-       const fileContent = await readFile(jobFilePath, "utf8")
-       jobStore = JSON.parse(fileContent) as JobStore;
-    } catch (error) {
-      if(error instanceof Error && 
-        "code" in error && 
-        error.code === "ENOENT"
-       ){
-        jobStore = {jobs:[]}
-      } else{
-        throw error
-      }
+
+export async function createJob(job: Job): Promise<void> {
+  await mkdir(path.dirname(jobFilePath), { recursive: true });
+  let jobStore: JobStore;
+
+  try {
+    const fileContent = await readFile(jobFilePath, "utf8");
+    jobStore = JSON.parse(fileContent) as JobStore;
+  } catch (error) {
+    if (error instanceof Error && "code" in error && error.code === "ENOENT") {
+      jobStore = { jobs: [] };
+    } else {
+      throw error;
     }
+  }
 
-          jobStore.jobs.push(job)
-
+  jobStore.jobs.push(job);
+  await writeFile(jobFilePath, JSON.stringify(jobStore, null ,2), "utf8");
 }

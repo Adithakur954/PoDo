@@ -1,2 +1,10 @@
 .env
 tmp/youtube-tokens.json
+
+# Temporary files
+tmp/
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
