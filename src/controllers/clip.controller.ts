@@ -10,7 +10,7 @@ import {
 } from "../services/video.service.js";
 
 import { uploadVideoToYouTube } from "../services/youtube-upload.service.js";
-import { updateJobStatus } from "../services/job.service.js";
+import { createJob, updateJobStatus } from "../services/job.service.js";
 
 interface GeneratedClip {
   part: number;
@@ -43,6 +43,10 @@ export function createClipPlanController(req: Request, res: Response): void {
   }
 
   const plan = createClipPlan(result.data);
+
+ 
+
+  
 
   res.status(200).json({
     success: true,
@@ -110,6 +114,21 @@ export async function processVideoController(
       totalDuration: duration,
       clipDuration: result.data.clipDuration,
     });
+
+     const jobClips = plan.clips.map((plan) => ({
+    part: plan.part,
+    "status" : "pending" ,
+    videoId : null
+  }));
+
+  const job = {
+     jobId,
+    status: "processing",
+    
+    clips:jobClips
+  }
+
+  await createJob(job);
 
     const generatedClips: GeneratedClip[] = [];
     
