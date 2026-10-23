@@ -25,6 +25,28 @@ export async function updateJobStatus(jobId, status) {
     job.status = status;
     await writeFile(jobFilePath, JSON.stringify(jobStore, null, 2), "utf8");
 }
+export async function updateClipStatus(jobId, part, status, videoId) {
+    await mkdir(path.dirname(jobFilePath), { recursive: true });
+    let jobStore;
+    const fileContent = await readFile(jobFilePath, "utf8");
+    jobStore = JSON.parse(fileContent);
+    try {
+        const job = jobStore.jobs.find((job) => job.jobId === jobId);
+        if (!job) {
+            throw new Error(`Job not found: ${jobId}`);
+        }
+        const clip = job.clips.find((clip) => clip.part === part);
+        if (!clip) {
+            throw new Error(`Clip ${part} not found in job ${jobId}`);
+        }
+        clip.status = status;
+        clip.videoId = videoId;
+        await writeFile(jobFilePath, JSON.stringify(jobStore, null, 2), "utf8");
+    }
+    catch (error) {
+        throw error;
+    }
+}
 export async function createJob(job) {
     await mkdir(path.dirname(jobFilePath), { recursive: true });
     let jobStore;
@@ -33,9 +55,7 @@ export async function createJob(job) {
         jobStore = JSON.parse(fileContent);
     }
     catch (error) {
-        if (error instanceof Error &&
-            "code" in error &&
-            error.code === "ENOENT") {
+        if (error instanceof Error && "code" in error && error.code === "ENOENT") {
             jobStore = { jobs: [] };
         }
         else {
