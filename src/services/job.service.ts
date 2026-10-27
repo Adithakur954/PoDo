@@ -110,14 +110,23 @@ export async function createJob(job: Job): Promise<void> {
 }
 
 export async function getJobById(jobId: string): Promise< Job | undefined >{
- await mkdir(path.dirname(jobFilePath), {recursive: true})
 
- const fileContent = await readFile(jobFilePath, "utf8");
+ try {
+  const fileContent = await readFile(jobFilePath, "utf8");
  const jobStore = JSON.parse(fileContent) as JobStore ;
 
  const result = jobStore.jobs.find((job) => job.jobId === jobId)
 
  return result ;
+ } catch (error) {
+  if(typeof error === "object" && error !== null && "code" in error && error.code === "ENOENT"){
+    console.error(error);
+    return undefined ;
+
+  }
+   throw error;
+ }
+ 
 
 
 

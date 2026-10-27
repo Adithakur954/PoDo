@@ -1,6 +1,7 @@
 import express from 'express';
 import clipRoutes from "./routes/clip.routes.js";
 import cors from 'cors';
+import jobRoutes from "./routes/job.routes.js"
 import youtubeAuthRoutes from "./routes/youtube-auth.routes.js";
 // What is express()?
 
@@ -22,7 +23,8 @@ app.get('/health', (_req, res) => {   // "_" this tell that argument is aviable 
 } );
 
 app.use("/api/clip", clipRoutes);  //this is the route for clip routes
-app.use("/api/youtube", youtubeAuthRoutes);  //this is the route for YouTube authentication routes
+app.use("/api/youtube", youtubeAuthRoutes);
+app.use("/api/job", jobRoutes)  //this is the route for YouTube authentication routes
 
 
 

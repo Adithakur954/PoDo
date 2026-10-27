@@ -65,4 +65,19 @@ export async function createJob(job) {
     jobStore.jobs.push(job);
     await writeFile(jobFilePath, JSON.stringify(jobStore, null, 2), "utf8");
 }
+export async function getJobById(jobId) {
+    try {
+        const fileContent = await readFile(jobFilePath, "utf8");
+        const jobStore = JSON.parse(fileContent);
+        const result = jobStore.jobs.find((job) => job.jobId === jobId);
+        return result;
+    }
+    catch (error) {
+        if (typeof error === "object" && error !== null && "code" in error && error.code === "ENOENT") {
+            console.error(error);
+            return undefined;
+        }
+        throw error;
+    }
+}
 //# sourceMappingURL=job.service.js.map
