@@ -55,7 +55,7 @@ export async function updateJobStatus(
 export async function updateClipStatus(jobId:string,
   part: number,
   status: string,
-  videoId: string
+  videoId: string | null
 ):Promise<void>{
 
   await mkdir(path.dirname(jobFilePath), { recursive: true });
