@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { getJobById } from "../services/job.service.js";
+import { countCompletedClips, countFailedClips, countPendingClips, getJobById, getJobProgress } from "../services/job.service.js";
 
 
 
@@ -19,6 +19,9 @@ export async function getJobByController( req:Request,res:Response): Promise<voi
 
   const job = await getJobById(jobId);
 
+  
+  
+
   if(!job){
     res.status(404).json({
       success: false,
@@ -27,10 +30,16 @@ export async function getJobByController( req:Request,res:Response): Promise<voi
 
     return;
   }
+  const totalClips = job.clips.length;
+
+  const progress = getJobProgress(job)
+  const completedClips = countCompletedClips(job);
+  const pendingClips = countPendingClips(job);
+  const failedClips = countFailedClips(job);  
   res.status(200).json({
   success: true,
   message: "Job Founded",
-  data: job
+  data: {...job,totalClips, progress, completedClips, pendingClips, failedClips}
 })
   } catch (error) {
     res.status(500).json({

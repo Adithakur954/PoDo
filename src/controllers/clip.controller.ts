@@ -179,7 +179,7 @@ export async function processVideoController(
 
       console.log(`Clip ${clip.part} uploaded successfully.`);
     }
-    allUploadsSucceeded = true;
+    
 
    
 
@@ -187,7 +187,7 @@ export async function processVideoController(
       await rm(jobDir, { recursive: true, force: true });
       console.log("All uploads succeeded. Generated clips deleted.");
     }
-     await updateJobStatus(jobId, "uploaded");
+     await updateJobStatus(jobId, "completed");
 
     res.status(200).json({
       success: true,

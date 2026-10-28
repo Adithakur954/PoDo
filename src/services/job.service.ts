@@ -131,3 +131,35 @@ export async function getJobById(jobId: string): Promise< Job | undefined >{
 
 
 }
+
+
+export function countCompletedClips(job:Job): number {
+
+  const result = job.clips.filter((num) => num.status === "completed" );
+
+  return result.length
+}
+
+export function countPendingClips(job:Job): number {
+
+  const result = job.clips.filter((num) => num.status === "pending" );
+
+  return result.length
+}
+
+export function countFailedClips(job:Job): number {
+
+  const result = job.clips.filter((num) => num.status === "failed" );
+
+  return result.length
+}
+
+export function getJobProgress(job: Job): number {
+  const totalClips = job.clips.length;
+
+  if (totalClips === 0) {
+    return 0;
+  }
+
+  return (countCompletedClips(job) / totalClips) * 100;
+}
