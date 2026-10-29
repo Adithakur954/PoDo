@@ -1,4 +1,4 @@
-import { getJobById } from "../services/job.service.js";
+import { countCompletedClips, countFailedClips, countPendingClips, getJobById, getJobProgress } from "../services/job.service.js";
 export async function getJobByController(req, res) {
     try {
         const { jobId } = req.params;
@@ -17,10 +17,15 @@ export async function getJobByController(req, res) {
             });
             return;
         }
+        const totalClips = job.clips.length;
+        const progress = getJobProgress(job);
+        const completedClips = countCompletedClips(job);
+        const pendingClips = countPendingClips(job);
+        const failedClips = countFailedClips(job);
         res.status(200).json({
             success: true,
             message: "Job Founded",
-            data: job
+            data: { ...job, totalClips, progress, completedClips, pendingClips, failedClips }
         });
     }
     catch (error) {

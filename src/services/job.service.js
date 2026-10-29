@@ -80,4 +80,23 @@ export async function getJobById(jobId) {
         throw error;
     }
 }
+export function countCompletedClips(job) {
+    const result = job.clips.filter((num) => num.status === "completed");
+    return result.length;
+}
+export function countPendingClips(job) {
+    const result = job.clips.filter((num) => num.status === "pending");
+    return result.length;
+}
+export function countFailedClips(job) {
+    const result = job.clips.filter((num) => num.status === "failed");
+    return result.length;
+}
+export function getJobProgress(job) {
+    const totalClips = job.clips.length;
+    if (totalClips === 0) {
+        return 0;
+    }
+    return (countCompletedClips(job) / totalClips) * 100;
+}
 //# sourceMappingURL=job.service.js.map
