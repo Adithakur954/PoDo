@@ -15,7 +15,7 @@ export function getYoutubeAuthorizationUrl(): string{
 
   return oauthClient.generateAuthUrl({
     access_type: 'offline',
-       scope: ["https://www.googleapis.com/auth/youtube.upload"],
+       scope: ["https://www.googleapis.com/auth/youtube.upload",],
        prompt: 'consent',
   });
 }

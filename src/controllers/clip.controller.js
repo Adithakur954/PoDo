@@ -50,7 +50,6 @@ export async function processVideoController(req, res) {
     }
     let jobDir;
     let sourceVideoPath;
-    let allUploadsSucceeded = false;
     let uploadedClips = [];
     const jobId = randomUUID();
     try {
@@ -123,17 +122,36 @@ export async function processVideoController(req, res) {
                 continue;
             }
         }
-        if (allUploadsSucceeded && jobDir) {
+        const completedCount = uploadedClips.length;
+        const failedCount = generatedClips.length - completedCount;
+        let finalJobStatus;
+        if (failedCount === 0) {
+            finalJobStatus = "completed";
+        }
+        else if (completedCount > 0) {
+            finalJobStatus = "partial_failed";
+        }
+        else {
+            finalJobStatus = "failed";
+        }
+        console.log("Final job status:", finalJobStatus);
+        if (finalJobStatus === "completed" && jobDir) {
             await rm(jobDir, { recursive: true, force: true });
             console.log("All uploads succeeded. Generated clips deleted.");
         }
-        await updateJobStatus(jobId, "completed");
+        await updateJobStatus(jobId, finalJobStatus);
         res.status(200).json({
-            success: true,
-            message: "Video processed and uploaded successfully",
+            success: finalJobStatus === "completed",
+            message: finalJobStatus === "completed"
+                ? "All clips uploaded successfully"
+                : finalJobStatus === "partial_failed"
+                    ? "Processing finished, but some clips failed to upload"
+                    : "All clip uploads failed",
             data: {
                 filename: req.file?.originalname ?? result.data.youtubeUrl,
                 ...plan,
+                jobId,
+                status: finalJobStatus,
                 generatedClips,
                 uploadedClips,
             },
