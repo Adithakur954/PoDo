@@ -24,7 +24,12 @@ export function getYoutubeAuthorizationUrl(): string{
 export async function exchangeCodeForTokens(code: string) {
   const oauthClient = createYoutubeOAuthClient();
 
+
   const { tokens } = await oauthClient.getToken(code);
+  console.log({
+  hasAccessToken: Boolean(tokens.access_token),
+  hasRefreshToken: Boolean(tokens.refresh_token),
+});
 
   return tokens;
 }
