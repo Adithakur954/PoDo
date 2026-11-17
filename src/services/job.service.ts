@@ -3,13 +3,25 @@ import path from "node:path";
 
 const jobFilePath = path.resolve("tmp/jobs.json");
 
+type JobStatus =
+  | "processing"
+  | "completed"
+  | "partial_failed"
+  | "failed";
+
+type ClipStatus =
+  | "pending"
+  | "processing"
+  | "completed"
+  | "failed";
+
 interface Job {
   jobId: string;
-  status: string;
+  status: JobStatus;
   failedAt?: number;
   clips: {
     part: number;
-    status: string;
+    status: ClipStatus;
     videoId: string | null;
   }[];
 }
@@ -20,7 +32,7 @@ interface JobStore {
 
 export async function updateJobStatus(
   jobId: string,
-  status: string,
+  status:"processing",
 ): Promise<void> {
   await mkdir(path.dirname(jobFilePath), { recursive: true });
 
@@ -54,7 +66,7 @@ export async function updateJobStatus(
 
 export async function updateClipStatus(jobId:string,
   part: number,
-  status: string,
+  status: "pending",
   videoId: string | null
 ):Promise<void>{
 
@@ -135,9 +147,9 @@ export async function getJobById(jobId: string): Promise< Job | undefined >{
 
 export function countCompletedClips(job:Job): number {
 
-  const result = job.clips.filter((num) => num.status === "completed" );
-
-  return result.length
+  return job.clips.filter(
+  (clip) => clip.status === "completed"
+).length;
 }
 
 export function countPendingClips(job:Job): number {
@@ -162,4 +174,4 @@ export function getJobProgress(job: Job): number {
   }
 
   return (countCompletedClips(job) / totalClips) * 100;
-}
+} 

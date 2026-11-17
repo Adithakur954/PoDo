@@ -3,3 +3,18 @@
 
 # Local environment variables
 .env
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# YouTube OAuth tokens
+tmp/youtube-tokens.json
+
+# Uploaded videos and generated clips
+tmp/uploads/
+tmp/jobs/
+tmp/jobs.json
+
+# Dependencies
+node_modules/

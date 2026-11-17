@@ -3,6 +3,7 @@ import clipRoutes from "./routes/clip.routes.js";
 import cors from 'cors';
 import jobRoutes from "./routes/job.routes.js"
 import youtubeAuthRoutes from "./routes/youtube-auth.routes.js";
+import "dotenv/config"
 // What is express()?
 
 // This:
